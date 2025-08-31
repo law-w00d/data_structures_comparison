@@ -39,7 +39,7 @@ void link_node_print (struct link_node *node)
 }
 
 /* Starts at the node you give it, and recursively frees all nodes after it */
-void link_free_all (struct link_node *head, int *iter)
+void link_free_all (struct link_node *head)
 {
 	if (head == NULL)
 	{
@@ -48,8 +48,7 @@ void link_free_all (struct link_node *head, int *iter)
 	}
 	struct link_node *next = head->next;
 	free(head);
-	//printf("iterations: %i\n", ++(*iter));
-	link_free_all(next, iter);
+	link_free_all(next);
 }
 
 /* Create a new head for the linked list, return pointer to the new head */
@@ -157,7 +156,6 @@ struct varray *varray_init (int n)
 	}
 	v->size = n;
 	size_t mem = sizeof(int) * ((ARRAY_SIZE_STEP * (n / ARRAY_SIZE_STEP)) + ARRAY_SIZE_STEP);
-	//int mem = (n / ARRAY_SIZE_STEP) + ARRAY_SIZE_STEP;
 	if ((v->array = ((int *) malloc(mem))) == NULL)
 	{
 		perror(VARRAY_MEM_ERR);
@@ -266,22 +264,12 @@ struct varray *varray_resize (struct varray *v, int size)
 	}
 
 	struct varray *new;
-
-	/* if (size <= v->allocated / sizeof(int))
-	{
-		v->size = size;
-		return v;
-	} */
 	
 	if ((new = varray_init(size)) == NULL)
 	{
 		return NULL;
 	}
 
-	/* if (size <= v->allocated / sizeof(int))
-		new = varray_copy(new, v->array, new->size);
-	else
-		new = varray_copy(new, v->array, v->size); */
 	new = varray_copy(new, v->array, v->size);
 
 	if (new == NULL)

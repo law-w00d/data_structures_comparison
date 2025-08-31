@@ -1,9 +1,13 @@
-node at 0x55d0d3e53c40: 77
-next node at 0x55d0d3e53c60
+
+
+TESTING LINKED LIST
+
+node at 0x556628f23c50: 77
+next node at 0x556628f23c70
 
 Error: node is NULL
 Error: node is NULL
-node at 0x55d0d3ea1480: 9999
+node at 0x556628f71490: 9999
 next node at (nil)
 
 Error: node is NULL
@@ -12,34 +16,95 @@ Freed all nodes
 Finished testing linked list
 
 
-varray at: 0x55d0d3e53360
+
+
+TESTING VARIABLE ARRAY
+
+varray at: 0x556628f23370
 	size: 7
 	allocated: 40 bytes of memory
-	array at: 0x55d0d3ea2ac0
+	array at: 0x556628f71aa0
 	contents: 0, 0, 0, 0, 0, 0, 0, 
 
-varray at: 0x55d0d3e53340
+varray at: 0x556628f23350
 	size: 15
 	allocated: 80 bytes of memory
-	array at: 0x55d0d3ea2af0
+	array at: 0x556628f71ad0
 	contents: 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 
-varray at: 0x55d0d3e53340
+varray at: 0x556628f23350
 	size: 15
 	allocated: 80 bytes of memory
-	array at: 0x55d0d3ea2af0
+	array at: 0x556628f71ad0
 	contents: 7, 10, 18, 14, 1, 2, 3, 6, 6, 8, 8, 9, 1, 2, 53, 
 
-varray at: 0x55d0d3e53360
+varray at: 0x556628f23370
 	size: 8
 	allocated: 40 bytes of memory
-	array at: 0x55d0d3ea2ac0
+	array at: 0x556628f71aa0
 	contents: 7, 10, 18, 14, 1, 2, 3, 6, 
 
-varray at: 0x55d0d3e53340
+varray at: 0x556628f23350
 	size: 26
 	allocated: 120 bytes of memory
-	array at: 0x55d0d3ea2b50
+	array at: 0x556628f71b30
 	contents: 7, 10, 18, 14, 1, 2, 3, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 
 Finished testing varray
+
+
+TESTING MEMORY POOL
+
+pool byte size: 64
+pool created at 0x556628f71bb0
+
+pool_print_free():
+	Free block at: 0x556628f71bb0
+	Next block at: 0x556628f71bb8
+
+	Free block at: 0x556628f71bb8
+	Next block at: 0x556628f71bc0
+
+	Free block at: 0x556628f71bc0
+	Next block at: 0x556628f71bc8
+
+	Free block at: 0x556628f71bc8
+	Next block at: 0x556628f71bd0
+
+	Free block at: 0x556628f71bd0
+	Next block at: 0x556628f71bd8
+
+	Free block at: 0x556628f71bd8
+	Next block at: 0x556628f71be0
+
+	Free block at: 0x556628f71be0
+	Next block at: 0x556628f71be8
+
+	Free block at: 0x556628f71be8
+	Next block at: (nil)
+
+Creating new array and allocating blocks from pool
+Contents of new array:
+	alloced[0]: 0x556628f71bb0 with value: 0
+	alloced[1]: 0x556628f71bb8 with value: 1
+	alloced[2]: 0x556628f71bc0 with value: 2
+	alloced[3]: 0x556628f71bc8 with value: 3
+	alloced[4]: 0x556628f71bd0 with value: 4
+	alloced[5]: 0x556628f71bd8 with value: 5
+	alloced[6]: 0x556628f71be0 with value: 6
+	alloced[7]: 0x556628f71be8 with value: 7
+Attempting to free block at 0x556628f71be8 with value 7
+pool_print_free():
+	Free block at: 0x556628f71be8
+	Next block at: (nil)
+
+Attempting to free block at 0x556628f71be0 with value 6
+pool_print_free():
+	Free block at: 0x556628f71be0
+	Next block at: 0x556628f71be8
+
+	Free block at: 0x556628f71be8
+	Next block at: (nil)
+
+entire pool freed
+Finished testing memory pool
