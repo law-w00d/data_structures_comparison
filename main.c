@@ -4,10 +4,12 @@
 #include "pool.h"
 
 #define VALS_LEN 10000
+#define LOOP_NUM 1000000
 
 void test_linked_list (void);
 void test_varray (void);
 void test_pool (void);
+void loop_pool (struct mem_pool *p);
 
 /* Test time when creating and accessing (or resizing) linked lists, variable length arrays, and pools */
 int main (int argc, char *argv[])
@@ -20,10 +22,10 @@ int main (int argc, char *argv[])
 	}
 
 	// Linked list
-	test_linked_list();
+	//test_linked_list();
 
 	// Varray
-	test_varray();
+	//test_varray();
 
 	// Memory pool
 	test_pool();
@@ -124,47 +126,65 @@ void test_varray (void)
 
 void test_pool (void)
 {
-	printf("\n\nTESTING MEMORY POOL\n\n");
+	printf("\nTESTING MEMORY POOLS\n\n");
 
-	// Allocate the pool
-	printf("pool byte size: %d\n", (POOL_SIZE * BLOCK_SIZE));
-	void *p1 = pool_create(POOL_SIZE * BLOCK_SIZE);
-	printf("pool created at %p\n\n", p1);
+	// Create 3 pools of different block sizes (8, 16, and 32 blocks)
+	// All pools have the same number of blocks
+	struct mem_pool *p8, *p16, *p32;
 
-	// Get linked list of free blocks
-	struct pool_block *freeHead = pool_init(p1, BLOCK_SIZE);
-	pool_print_free(freeHead);
-
-	// Create array of blocks to allocate from pool
-	printf("Creating new array and allocating blocks from pool\n");
-	uint64_t *alloced[POOL_SIZE];
-	for (int i = 0; i < POOL_SIZE; i++)
-	{
-		uint64_t *n = pool_alloc_long(p1, &freeHead);
-		if (n)
-		{
-			alloced[i] = n;
-		}
-		*(alloced[i]) = (uint64_t) i;
-	}
+	if ((p8 = pool_create(BLOCK_SIZE_8, POOL_SIZE)) == NULL)
+		exit(1);
+	if ((p16 = pool_create(BLOCK_SIZE_16, POOL_SIZE)) == NULL)
+		exit(1);
+	if ((p32 = pool_create(BLOCK_SIZE_32, POOL_SIZE)) == NULL)
+		exit(1);
 	
-	printf("Contents of new array:\n");
-	for (int i = 0; i < POOL_SIZE; i++)
-	{
-		printf("\talloced[%i]: %p with value: %ld\n", i, alloced[i], *(alloced[i]));
-	}
+	pool_init(p8);
+	pool_init(p16);
+	pool_init(p32);
 
-	// Free last block of alloced array
-	pool_free_long(alloced[POOL_SIZE - 1], &freeHead);
-	pool_print_free(freeHead);
+	printf("p8:\t");
+	loop_pool(p8);
+	printf("p16:\t");
+	loop_pool(p16);
+	printf("p32:\t");
+	loop_pool(p32);
 
-	// Free second to last block of alloced array
-	pool_free_long(alloced[POOL_SIZE - 2], &freeHead);
-	pool_print_free(freeHead);
+	pool_release(p8);
+	pool_release(p16);
+	pool_release(p32);
 
-	pool_free(p1);
-	printf("entire pool freed\n");
-
-	printf("Finished testing memory pool\n");
+	printf("\nFINISHED TESTING MEMORY POOLS\n\n");
 	return;
+}
+
+/* Loop some actions for memory pool and time it */
+void loop_pool (struct mem_pool *p)
+{
+	clock_t start, end;
+	start = clock();
+	for (int t = 0; t < LOOP_NUM; t++)
+	{
+		// Create array to hold blocks
+		void *alloced[POOL_SIZE];
+
+		// Allocate blocks from pool and set their value
+		for (int i = 0; i < POOL_SIZE; i++)
+		{
+			void *n = pool_alloc(p);
+			if (n != NULL)
+			{
+				alloced[i] = n;
+				*(uint64_t *)(alloced[i]) = (uint64_t) i;
+			}
+		}
+
+		// Free blocks back to pool
+		for (int i = 0; i < POOL_SIZE; i++)
+		{
+			pool_free(alloced[i], p);
+		}
+	}
+	end = clock();
+	printf("Time elapsed: %ld ms\n", (end - start) / (CLOCKS_PER_SEC / 1000));
 }

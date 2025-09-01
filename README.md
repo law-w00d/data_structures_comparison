@@ -1,9 +1,11 @@
-# Comparing memory pools to dynamic arrays and linked lists * *work in-progress* *
-*This side project is only a learning experience. Much of the code I have written is messy, intended for debugging. In no way does it reflect the quality of a final product. There is room for re-factoring and additional error-checking. Currently, my functions (especially for memory pools) are not very flexible and are restricted to certain types/sizes, with the goal of improving this in the future.*
+# Testing memory pools, dynamic arrays, etc. * *work in-progress* *
+I have written a library for working with my own implementations of linked lists, variable (dynamic) arrays, and memory pools.
 
-Currently I have written a simple library for working with my own implementations of linked lists, variable (dynamic) arrays, and memory pools.
+In its current state, the main program tests my memory pools, of which there are 3. Each pool has 8 blocks. The block size for each pool is 8 bytes, 16 bytes, and 32 bytes.
 
-The main program successfully tests using the functions I wrote. Some test cases are intentinally erroneous, and errors are thrown when expected.
+To test each memory pool, the program runs a loop 1,000,000 times. Inside the loop, each of the 8 blocks for the pool are allocated and given a value. Then they are freed back to the pool. Then it loops. The time is taken in milliseconds - from the start of each pool test, to the end of the 1,000,000 loops on that pool.
+
+This identical loop is run for each of the 3 different pools.
 
 For more detailed information about how this is being implemented, see the comments for each function in "dstruct.h" and "pool.h".
 
